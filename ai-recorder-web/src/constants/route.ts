@@ -1,4 +1,5 @@
 export const ROUTES = {
-  home: "/",
-  other: "*",
+  home: '/',
+  recorder: '/recorder',
+  other: '*',
 } as const;
