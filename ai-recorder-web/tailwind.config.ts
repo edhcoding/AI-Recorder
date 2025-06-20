@@ -6,6 +6,11 @@ export default {
   theme: {
     extend: {
       colors,
+      fontFamily: {
+        pretendard: ['Pretendard', 'sans-serif'],
+        santokki: ['SanTokki', 'Pretendard', '-apple-system'],
+        paperlogy: ['Paperlogy', 'Pretendard', '-apple-system'],
+      },
     },
   },
   plugins: [],
