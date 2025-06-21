@@ -1,9 +1,12 @@
+import { Helmet } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
 
 export default function Layout() {
   return (
     <>
-      <div className="fixed top-0 max-w-2xl w-full bg-amber-200">navbar</div>
+      <Helmet>
+        <title>AI Recorder - 음성 녹음 및 AI 요약 서비스</title>
+      </Helmet>
 
       <Outlet />
     </>

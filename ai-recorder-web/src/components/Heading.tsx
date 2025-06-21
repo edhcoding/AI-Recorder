@@ -7,9 +7,16 @@ export type HeaderProps = {
   onBack?: () => void;
   showBackButton?: boolean;
   showLogo?: boolean;
+  showCamera?: boolean;
 };
 
-export default function Heading({ title, onBack, showBackButton = true, showLogo = false }: HeaderProps) {
+export default function Heading({
+  title,
+  onBack,
+  showBackButton = true,
+  showLogo = false,
+  showCamera = false,
+}: HeaderProps) {
   return (
     <div className="sticky top-0 z-10 h-16 border-b border-gray-200 p-4">
       <div className="flex items-center relative size-full">
@@ -22,7 +29,15 @@ export default function Heading({ title, onBack, showBackButton = true, showLogo
             </div>
           </Link>
         )}
-        <div className="w-full text-center text-lg font-medium">{title}</div>
+        {showCamera && (
+          <button type="button" className="material-icons size-6 absolute right-0">
+            camera_alt
+          </button>
+        )}
+        <div className="w-full text-center text-xl font-medium flex justify-center items-center gap-1">
+          {title}
+          <img src="/assets/images/record-disc.png" alt="logo" className="size-6 inline-block" />
+        </div>
       </div>
     </div>
   );

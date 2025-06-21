@@ -27,7 +27,7 @@ export default function BackButton({ onBack, ...props }: Props) {
     <button
       type="button"
       onClick={onClickBack}
-      className="absolute left-0 material-icons size-5 cursor-pointer"
+      className="absolute left-0 material-icons size-6 cursor-pointer"
       {...props}
     >
       arrow_back_ios

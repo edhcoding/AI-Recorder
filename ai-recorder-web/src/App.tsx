@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout';
 import { ROUTES } from '@/constants/route';
 import HomePage from '@/pages/HomePage';
+import RecorderPage from '@/pages/RecorderPage';
+import { HelmetProvider } from 'react-helmet-async';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -12,6 +14,10 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        path: ROUTES.recorder,
+        element: <RecorderPage />,
+      },
+      {
         path: ROUTES.other,
         element: <div>404</div>,
       },
@@ -20,5 +26,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <HelmetProvider>
+      <RouterProvider router={router} />
+    </HelmetProvider>
+  );
 }
