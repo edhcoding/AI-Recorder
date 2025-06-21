@@ -96,6 +96,12 @@
     animation: wave 1.5s infinite;
     animation-delay: 750ms;
   }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-in-out both;
+  }
+  .animate-fade-out-down {
+    animation: fadeOutDown 0.4s ease-in-out both;
+  }
 }
 
 @keyframes wave {
@@ -108,5 +114,31 @@
     transform: scale(1.8);
     opacity: 0;
     will-change: transform, opacity;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: opacity, transform;
+  }
+}
+
+@keyframes fadeOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: opacity, transform;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+    will-change: opacity, transform;
   }
 }

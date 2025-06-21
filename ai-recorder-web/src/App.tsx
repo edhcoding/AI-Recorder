@@ -1,4 +1,6 @@
 import Layout from '@/components/Layout';
+import { ToastProvider } from '@/components/Toast/ToastContext';
+import ToastList from '@/components/Toast/ToastList';
 import { ROUTES } from '@/constants/route';
 import HomePage from '@/pages/HomePage';
 import RecorderPage from '@/pages/RecorderPage';
@@ -28,7 +30,10 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <HelmetProvider>
-      <RouterProvider router={router} />
+      <ToastProvider>
+        <ToastList />
+        <RouterProvider router={router} />
+      </ToastProvider>
     </HelmetProvider>
   );
 }

@@ -3,4 +3,5 @@ export const colors = {
   gray: '#AEAEB2',
   black: '#1A1A1A',
   primary: '#2E88FF',
+  error: '#FF453A',
 } as const;

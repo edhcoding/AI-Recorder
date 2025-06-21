@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import PageLayout from '@/components/PageLayout';
 import { cn } from '@/utils/cn';
+import { useToast } from '@/hooks/useToast';
+import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
 
 export default function RecorderPage() {
   const [recordState, setRecordState] = useState<'recording' | 'paused' | null>(null);
+
+  const { showToast } = useToast();
 
   return (
     <PageLayout headerProps={{ title: '녹음하기', showBackButton: true, showLogo: false }}>
@@ -41,7 +45,7 @@ export default function RecorderPage() {
           </button>
 
           {/* 얘시 동작 시험 버튼 */}
-          <div className="absolute bottom-[-300px] flex flex-col gap-2 font-extrabold">
+          <div className="absolute bottom-[-400px] left-[-200px] flex flex-col gap-2 font-extrabold">
             <button type="button" onClick={() => setRecordState('recording')}>
               recording
             </button>
@@ -50,6 +54,15 @@ export default function RecorderPage() {
             </button>
             <button type="button" onClick={() => setRecordState(null)}>
               null
+            </button>
+            <button type="button" onClick={() => showToast('success', TOAST_SUCCESS_MESSAGES.PAUSE_RECORD)}>
+              녹음일시정지 토스트
+            </button>
+            <button type="button" onClick={() => showToast('error', TOAST_SUCCESS_MESSAGES.SAVE_RECORD)}>
+              녹음저장 실패 토스트
+            </button>
+            <button type="button" onClick={() => showToast('error', TOAST_SUCCESS_MESSAGES.RESUME_RECORD)}>
+              녹음재생 토스트
             </button>
           </div>
         </div>
