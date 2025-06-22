@@ -20,6 +20,10 @@ const router = createBrowserRouter([
         element: <RecorderPage />,
       },
       {
+        path: ROUTES.recorderDetail(),
+        element: <div>RecorderDetail Page</div>,
+      },
+      {
         path: ROUTES.other,
         element: <div>404</div>,
       },

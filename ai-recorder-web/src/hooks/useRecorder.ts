@@ -1,3 +1,4 @@
+import { transcribeAndSummarize } from '@/apis/transcribe';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
 import { useToast } from '@/hooks/useToast';
 import { useCallback, useRef, useState } from 'react';
@@ -6,6 +7,13 @@ export default function useRecorder() {
   const [recordState, setRecordState] = useState<'recording' | 'paused' | null>(null);
   const [time, setTime] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcriptionResult, setTranscriptionResult] = useState<{
+    text: string;
+    segments: { start: number; end: number; text: string }[];
+  } | null>(null);
+  const [summaryResult, setSummaryResult] = useState<string | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -94,11 +102,38 @@ export default function useRecorder() {
     }
   }, [onPauseRecord, onResumeRecord, record, recordState, showToast]);
 
+  const transcribeAndSummarizeHandler = useCallback(async () => {
+    if (!audioUrl) {
+      showToast('error', '녹음 파일이 없습니다.');
+      return;
+    }
+
+    try {
+      setIsTranscribing(true);
+      const response = await fetch(audioUrl);
+      const audioBlob = await response.blob();
+
+      const result = await transcribeAndSummarize(audioBlob);
+      setTranscriptionResult(result.transcription);
+      setSummaryResult(result.summary);
+      showToast('success', '음성이 요약되었습니다.');
+    } catch (error) {
+      console.error('Transcription error:', error);
+      showToast('error', '음성 요약에 실패했습니다.');
+    } finally {
+      setIsTranscribing(false);
+    }
+  }, [audioUrl, showToast]);
+
   return {
     recordState,
     time,
     audioUrl,
     onPressRecord,
     onPressSave,
+    summaryResult,
+    transcriptionResult,
+    isTranscribing,
+    transcribeAndSummarizeHandler,
   };
 }

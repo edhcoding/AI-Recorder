@@ -20,7 +20,7 @@ export default function RecordControls({ recordState, time, audioUrl, onPressRec
         {formatTime(time)}
       </p>
       {recordState === 'recording' ? (
-        <div className="absolute top-14 space-y-3">
+        <div className="flex flex-col gap-3 absolute top-14">
           <button
             type="button"
             onClick={onPressRecord}
