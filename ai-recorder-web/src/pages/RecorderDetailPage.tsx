@@ -9,10 +9,10 @@ import { useParams } from 'react-router-dom';
 
 export default function RecorderDetailPage() {
   const { recorderId } = useParams();
-  const { get } = useRecorderContext();
+  const { get, update } = useRecorderContext();
 
   const [recorderData, setRecorderData] = useState<RecorderData | null>(null);
-  const [summaryData, setSummaryData] = useState(null);
+  const [isSummarizing, setIsSummarizing] = useState<boolean>(false);
 
   const { Funnel, Step, currentStep, nextClickHandler, prevClickHandler } = useFunnel('음성기록');
   const { showToast } = useToast();
@@ -20,20 +20,23 @@ export default function RecorderDetailPage() {
   const onClickSummarize = useCallback(async () => {
     if (!recorderData || !recorderId) return;
 
+    setIsSummarizing(true);
     try {
       const fullText = recorderData.text;
       const summary = await summaryText(fullText);
-      setSummaryData(summary);
 
       if (summary) {
+        update({ id: recorderId, summary });
         showToast('success', '요약이 생성되었습니다.');
         nextClickHandler('요약');
       }
     } catch (error) {
       console.error('Summary error:', error);
       showToast('error', '요약 생성에 실패했습니다.');
+    } finally {
+      setIsSummarizing(false);
     }
-  }, [nextClickHandler, recorderData, recorderId, showToast]);
+  }, [nextClickHandler, recorderData, recorderId, showToast, update]);
 
   useEffect(() => {
     if (recorderId) {
@@ -44,7 +47,7 @@ export default function RecorderDetailPage() {
   }, [get, recorderId]);
 
   return (
-    <PageLayout headerProps={{ title: `${currentStep}`, showBackButton: true, showLogo: false, showCamera: true }}>
+    <PageLayout headerProps={{ title: `${currentStep}`, showBackButton: true, showLogo: false }}>
       <div className="flex flex-col flex-1 overflow-auto">
         <Funnel>
           <Step name="음성기록">
@@ -59,11 +62,21 @@ export default function RecorderDetailPage() {
             <div className="flex-1 flex flex-col items-center overflow-y-scroll">
               <button
                 type="button"
+                disabled={isSummarizing}
                 onClick={onClickSummarize}
                 className="bg-primary relative flex items-center justify-center py-2 mt-2 text-white w-full rounded-lg cursor-pointer"
               >
-                <span className="material-icons mr-2 text-white">smart_toy</span> AI 요약하기
-                <span className="material-icons absolute right-4 text-3xl!">arrow_right_alt</span>
+                {isSummarizing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+                    <div>요약중...</div>
+                  </>
+                ) : (
+                  <>
+                    <span className="material-icons mr-2 text-white">smart_toy</span> AI 요약하기
+                    <span className="material-icons absolute right-4 text-3xl!">arrow_right_alt</span>
+                  </>
+                )}
               </button>
               <div className="flex flex-col w-full gap-4 overflow-y-scroll">
                 {recorderData?.segments.map((item, index) => (
@@ -86,10 +99,12 @@ export default function RecorderDetailPage() {
                 요약
               </button>
             </div>
-            {summaryData ? (
+            {recorderData?.summary ? (
               <div className="py-2 flex flex-col gap-2">
-                <span>🤖 AI 요약 결과</span>
-                <p className="border p-2 text-pretty">{summaryData}</p>
+                <div className="flex items-center gap-1 font-medium">
+                  <span className="material-icons text-2xl! text-primary">smart_toy</span> AI 요약 결과
+                </div>
+                <p className="border p-2 text-pretty">{recorderData.summary}</p>
               </div>
             ) : (
               <div className="flex flex-col flex-1 items-center justify-center text-center text-xl">

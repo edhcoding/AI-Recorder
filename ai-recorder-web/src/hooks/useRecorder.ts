@@ -61,12 +61,8 @@ export default function useRecorder() {
         const id = generateUuid();
 
         create({ id, text, segments });
-
         showToast('success', '녹음이 저장되었습니다.');
-
-        setTimeout(() => {
-          navigate(`/recorder/${id}`);
-        }, 2000);
+        navigate(`/recorder/${id}`);
       } catch (error) {
         console.error('Transcription error:', error);
         showToast('error', '음성 변환에 실패했습니다.');
@@ -97,7 +93,6 @@ export default function useRecorder() {
 
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
-
       mediaRecorder.onstart = () => startTimer();
       mediaRecorder.ondataavailable = (e) => audioChunksRef.current.push(e.data);
       mediaRecorder.onstop = () => {
@@ -129,29 +124,6 @@ export default function useRecorder() {
       showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
     }
   }, [onPauseRecord, onResumeRecord, record, recordState, showToast]);
-
-  // const transcribeAndSummarizeHandler = useCallback(async () => {
-  //   if (!audioUrl) {
-  //     showToast('error', '녹음 파일이 없습니다.');
-  //     return;
-  //   }
-
-  //   try {
-  //     setIsTranscribing(true);
-  //     const response = await fetch(audioUrl);
-  //     const audioBlob = await response.blob();
-
-  //     const result = await transcribeAndSummarize(audioBlob);
-  //     setTranscriptionResult(result.transcription);
-  //     setSummaryResult(result.summary);
-  //     showToast('success', '음성이 요약되었습니다.');
-  //   } catch (error) {
-  //     console.error('Transcription error:', error);
-  //     showToast('error', '음성 요약에 실패했습니다.');
-  //   } finally {
-  //     setIsTranscribing(false);
-  //   }
-  // }, [audioUrl, showToast]);
 
   return {
     recordState,

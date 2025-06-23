@@ -12,6 +12,8 @@ type RecorderDatabase = { [id: string]: RecorderData | undefined };
 type RecorderContextType = {
   get: ({ id }: { id: string }) => RecorderData | undefined;
   create: (data: RecorderData) => void;
+  update: ({ id, summary }: { id: string; summary?: string }) => void;
+  getAll: () => RecorderData[];
 };
 
 const RecorderContext = createContext<RecorderContextType | undefined>(undefined);
@@ -82,7 +84,6 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
   // const [recorderData, setRecorderData] = useState<RecorderDatabase>({});
   const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA);
   // const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA2);
-  console.log('recorderData', recorderData);
 
   const get = useCallback(
     ({ id }: { id: string }) => {
@@ -91,11 +92,30 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
     [recorderData],
   );
 
+  const getAll = useCallback(() => {
+    return Object.values(recorderData) as RecorderData[];
+  }, [recorderData]);
+
   const create = useCallback((data: RecorderData) => {
     setRecorderData((prev) => ({ ...prev, [data.id]: data }));
   }, []);
 
-  return <RecorderContext.Provider value={{ get, create }}>{children}</RecorderContext.Provider>;
+  const update = useCallback(({ id, summary }: { id: string; summary?: string }) => {
+    setRecorderData((prev) => {
+      const prevData = prev[id];
+      if (prevData == null) return prev;
+
+      return {
+        ...prev,
+        [id]: {
+          ...prevData,
+          ...(summary != null ? { summary } : {}),
+        },
+      };
+    });
+  }, []);
+
+  return <RecorderContext.Provider value={{ get, getAll, create, update }}>{children}</RecorderContext.Provider>;
 };
 
 export const useRecorderContext = () => {
