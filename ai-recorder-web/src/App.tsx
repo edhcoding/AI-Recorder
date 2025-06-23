@@ -2,7 +2,9 @@ import Layout from '@/components/Layout';
 import { ToastProvider } from '@/components/Toast/ToastContext';
 import ToastList from '@/components/Toast/ToastList';
 import { ROUTES } from '@/constants/route';
+import { RecorderProvider } from '@/contexts/RecorderContext';
 import HomePage from '@/pages/HomePage';
+import RecorderDetailPage from '@/pages/RecorderDetailPage';
 import RecorderPage from '@/pages/RecorderPage';
 import { HelmetProvider } from 'react-helmet-async';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -21,7 +23,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.recorderDetail(),
-        element: <div>RecorderDetail Page</div>,
+        element: <RecorderDetailPage />,
+      },
+      {
+        path: ROUTES.photo(),
+        element: <div>photo</div>,
       },
       {
         path: ROUTES.other,
@@ -34,10 +40,12 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <HelmetProvider>
-      <ToastProvider>
-        <ToastList />
-        <RouterProvider router={router} />
-      </ToastProvider>
+      <RecorderProvider>
+        <ToastProvider>
+          <ToastList />
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </RecorderProvider>
     </HelmetProvider>
   );
 }

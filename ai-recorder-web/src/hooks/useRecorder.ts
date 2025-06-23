@@ -1,25 +1,25 @@
-import { transcribeAndSummarize } from '@/apis/transcribe';
+// import { transcribeAndSummarize } from '@/apis/transcribe';
+import transcribeAudio from '@/apis/transcribe';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
+import { useRecorderContext } from '@/contexts/RecorderContext';
 import { useToast } from '@/hooks/useToast';
+import { generateUuid } from '@/utils/generateUuid';
 import { useCallback, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function useRecorder() {
   const [recordState, setRecordState] = useState<'recording' | 'paused' | null>(null);
   const [time, setTime] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [transcriptionResult, setTranscriptionResult] = useState<{
-    text: string;
-    segments: { start: number; end: number; text: string }[];
-  } | null>(null);
-  const [summaryResult, setSummaryResult] = useState<string | null>(null);
-
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
 
+  const navigate = useNavigate();
+
   const { showToast } = useToast();
+  const { create } = useRecorderContext();
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(() => {
@@ -48,17 +48,45 @@ export default function useRecorder() {
     }
   }, [startTimer]);
 
+  const onTranscibeAudio = useCallback(
+    async (url: string) => {
+      if (!url) return;
+
+      try {
+        showToast('success', '음성을 처리하고 있습니다...');
+
+        const response = await fetch(url);
+        const audioBlob = await response.blob();
+        const { text, segments } = await transcribeAudio(audioBlob);
+        const id = generateUuid();
+
+        create({ id, text, segments });
+
+        showToast('success', '녹음이 저장되었습니다.');
+
+        setTimeout(() => {
+          navigate(`/recorder/${id}`);
+        }, 2000);
+      } catch (error) {
+        console.error('Transcription error:', error);
+        showToast('error', '음성 변환에 실패했습니다.');
+      }
+    },
+    [create, navigate, showToast],
+  );
+
   const onStopRecord = useCallback(
     ({ url }: { url: string }) => {
       setAudioUrl(url);
       setRecordState(null);
       stopTimer();
       showToast('success', TOAST_SUCCESS_MESSAGES.SAVE_RECORD);
+      onTranscibeAudio(url);
     },
-    [showToast, stopTimer],
+    [onTranscibeAudio, showToast, stopTimer],
   );
 
-  const onPressSave = useCallback(() => {
+  const onPressSave = useCallback(async () => {
     if (mediaRecorderRef.current != null) mediaRecorderRef.current.stop();
   }, []);
 
@@ -102,28 +130,28 @@ export default function useRecorder() {
     }
   }, [onPauseRecord, onResumeRecord, record, recordState, showToast]);
 
-  const transcribeAndSummarizeHandler = useCallback(async () => {
-    if (!audioUrl) {
-      showToast('error', '녹음 파일이 없습니다.');
-      return;
-    }
+  // const transcribeAndSummarizeHandler = useCallback(async () => {
+  //   if (!audioUrl) {
+  //     showToast('error', '녹음 파일이 없습니다.');
+  //     return;
+  //   }
 
-    try {
-      setIsTranscribing(true);
-      const response = await fetch(audioUrl);
-      const audioBlob = await response.blob();
+  //   try {
+  //     setIsTranscribing(true);
+  //     const response = await fetch(audioUrl);
+  //     const audioBlob = await response.blob();
 
-      const result = await transcribeAndSummarize(audioBlob);
-      setTranscriptionResult(result.transcription);
-      setSummaryResult(result.summary);
-      showToast('success', '음성이 요약되었습니다.');
-    } catch (error) {
-      console.error('Transcription error:', error);
-      showToast('error', '음성 요약에 실패했습니다.');
-    } finally {
-      setIsTranscribing(false);
-    }
-  }, [audioUrl, showToast]);
+  //     const result = await transcribeAndSummarize(audioBlob);
+  //     setTranscriptionResult(result.transcription);
+  //     setSummaryResult(result.summary);
+  //     showToast('success', '음성이 요약되었습니다.');
+  //   } catch (error) {
+  //     console.error('Transcription error:', error);
+  //     showToast('error', '음성 요약에 실패했습니다.');
+  //   } finally {
+  //     setIsTranscribing(false);
+  //   }
+  // }, [audioUrl, showToast]);
 
   return {
     recordState,
@@ -131,9 +159,5 @@ export default function useRecorder() {
     audioUrl,
     onPressRecord,
     onPressSave,
-    summaryResult,
-    transcriptionResult,
-    isTranscribing,
-    transcribeAndSummarizeHandler,
   };
 }

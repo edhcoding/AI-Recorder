@@ -1,6 +1,6 @@
 import BackButton from '@/components/BackButton';
 import { ROUTES } from '@/constants/route';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export type HeaderProps = {
   title?: string;
@@ -17,6 +17,8 @@ export default function Heading({
   showLogo = false,
   showCamera = false,
 }: HeaderProps) {
+  const params = useParams();
+
   return (
     <div className="sticky top-0 z-10 h-16 border-b border-gray-200 p-4">
       <div className="flex items-center relative size-full">
@@ -30,9 +32,9 @@ export default function Heading({
           </Link>
         )}
         {showCamera && (
-          <button type="button" className="material-icons size-6 absolute right-0">
-            camera_alt
-          </button>
+          <Link to={ROUTES.photo(params.recorderId)} className="absolute right-0 flex items-center">
+            <span className="material-icons size-6">camera_alt</span>
+          </Link>
         )}
         <div className="w-full text-center text-xl font-medium flex justify-center items-center gap-1">
           {title}
