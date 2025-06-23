@@ -4,12 +4,11 @@ import { formatTime } from '@/utils/formatTime';
 interface Props {
   recordState: 'recording' | 'paused' | null;
   time: number;
-  audioUrl: string | null;
   onPressRecord: () => void;
   onPressSave: () => void;
 }
 
-export default function RecordControls({ recordState, time, audioUrl, onPressRecord, onPressSave }: Props) {
+export default function RecordControls({ recordState, time, onPressRecord, onPressSave }: Props) {
   return (
     <div className="flex flex-col items-center relative w-full">
       <p
@@ -58,14 +57,9 @@ export default function RecordControls({ recordState, time, audioUrl, onPressRec
           </button>
         </div>
       ) : (
-        <p className="absolute top-14 text-xl text-center">
+        <p className="absolute top-16 text-2xl text-center">
           녹음 버튼을 눌러 <br /> 녹음을 시작해주세요!!
         </p>
-      )}
-      {audioUrl != null && (
-        <audio controls>
-          <source src={audioUrl} />
-        </audio>
       )}
     </div>
   );

@@ -8,6 +8,7 @@ export type HeaderProps = {
   showBackButton?: boolean;
   showLogo?: boolean;
   showCamera?: boolean;
+  showTitle?: boolean;
 };
 
 export default function Heading({
@@ -16,6 +17,7 @@ export default function Heading({
   showBackButton = true,
   showLogo = false,
   showCamera = false,
+  showTitle = false,
 }: HeaderProps) {
   const params = useParams();
 
@@ -36,10 +38,12 @@ export default function Heading({
             <span className="material-icons size-6">camera_alt</span>
           </Link>
         )}
-        <div className="w-full text-center text-xl font-medium flex justify-center items-center gap-1">
-          {title}
-          <img src="/assets/images/record-disc.png" alt="logo" className="size-6 inline-block" />
-        </div>
+        {showTitle && (
+          <div className="w-full text-center text-xl font-medium flex justify-center items-center gap-1">
+            {title}
+            <img src="/assets/images/record-disc.png" alt="logo" className="size-6 inline-block" />
+          </div>
+        )}
       </div>
     </div>
   );

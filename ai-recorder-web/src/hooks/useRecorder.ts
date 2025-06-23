@@ -83,8 +83,13 @@ export default function useRecorder() {
   );
 
   const onPressSave = useCallback(async () => {
+    if (!audioUrl) {
+      showToast('error', '녹음이 완료되지 않았습니다.');
+      return;
+    }
+
     if (mediaRecorderRef.current != null) mediaRecorderRef.current.stop();
-  }, []);
+  }, [audioUrl, showToast]);
 
   const record = useCallback(async () => {
     try {
@@ -93,7 +98,11 @@ export default function useRecorder() {
 
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
-      mediaRecorder.onstart = () => startTimer();
+      mediaRecorder.onstart = () => {
+        setRecordState('recording');
+        startTimer();
+        showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
+      };
       mediaRecorder.ondataavailable = (e) => audioChunksRef.current.push(e.data);
       mediaRecorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: audioChunksRef.current[0].type });
@@ -119,16 +128,13 @@ export default function useRecorder() {
       setRecordState('recording');
       showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
     } else {
-      setRecordState('recording');
       record();
-      showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
     }
   }, [onPauseRecord, onResumeRecord, record, recordState, showToast]);
 
   return {
     recordState,
     time,
-    audioUrl,
     onPressRecord,
     onPressSave,
   };

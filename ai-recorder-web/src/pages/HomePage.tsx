@@ -11,7 +11,7 @@ export default function HomePage() {
   }, [navigate]);
 
   return (
-    <PageLayout headerProps={{ showBackButton: false, showLogo: true }}>
+    <PageLayout headerProps={{ showBackButton: false, showLogo: true, showTitle: false }}>
       <button
         type="button"
         onClick={onClickRecorder}
