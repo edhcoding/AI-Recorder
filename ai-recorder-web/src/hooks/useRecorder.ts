@@ -159,8 +159,10 @@ export default function useRecorder() {
     if (hasReactNativeWebview) {
       // RN 메시지 수신 함수
       const handleMessage = (event: any) => {
-        console.log('handleMessage', event);
-        const { type } = JSON.parse(event.data);
+        console.log('web handleMessage event', event);
+        const { type, data } = JSON.parse(event.data);
+        console.log('type', type);
+        console.log('data', data);
 
         if (type === 'onStartRecord') {
           setRecordState('recording');

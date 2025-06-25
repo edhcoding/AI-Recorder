@@ -2151,6 +2151,39 @@ PODS:
     - React-perflogger (= 0.80.0)
     - React-utils (= 0.80.0)
     - SocketRocket
+  - RNAudioRecorderPlayer (3.6.14):
+    - React-Core
+  - RNFS (2.20.0):
+    - React-Core
+  - RNPermissions (5.4.1):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
 
@@ -2228,6 +2261,9 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
+  - RNFS (from `../node_modules/react-native-fs`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - SocketRocket (~> 0.7.1)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -2381,6 +2417,12 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNAudioRecorderPlayer:
+    :path: "../node_modules/react-native-audio-recorder-player"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2457,9 +2499,12 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 3267432b637c9b38e86961b287f784ee1b08dde0
   ReactCodegen: 5d41e1df061200130dd326e55cdfdf94b0289c6e
   ReactCommon: b028d09a66e60ebd83ca59d8cc9a1216360db147
+  RNAudioRecorderPlayer: b5ed41ccfe72a211a870bfe09ab36c046eb27d2a
+  RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
+  RNPermissions: 6b80e76129a86978711e52f75235aa18529b8e77
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 0c4b7d2aacc910a1f702694fa86be830386f4ceb
 
-PODFILE CHECKSUM: 963065af0499557b29cdc9871910b8790e358109
+PODFILE CHECKSUM: aa27d5021c182d2df2af7357c9ff714b42812505
 
 COCOAPODS: 1.15.2
