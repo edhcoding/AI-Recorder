@@ -2,37 +2,75 @@ import { Platform, SafeAreaView } from 'react-native';
 import WebView from 'react-native-webview';
 import { styles } from './styles';
 import { useCallback, useRef } from 'react';
+import AudioRecorderPlayer, {
+  AVEncodingOption,
+  OutputFormatAndroidType,
+} from 'react-native-audio-recorder-player';
+import Permission from 'react-native-permissions';
+import RNFS from 'react-native-fs';
 
 export default function App() {
   const webViewRef = useRef<WebView | null>(null);
+  const audioRecorderPlayerRef = useRef<AudioRecorderPlayer>(
+    new AudioRecorderPlayer(),
+  );
 
   const sendMessageToWebView = useCallback((type: string, data?: any) => {
     const message = JSON.stringify({ type, data });
     webViewRef.current?.postMessage(message);
   }, []);
 
-  const startRecord = useCallback(() => {
-    // TODO: 녹음 시작
-    console.log('start-record');
+  const startRecord = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const grants = await Permission.requestMultiple([
+          Permission.PERMISSIONS.ANDROID.RECORD_AUDIO,
+        ]);
+
+        if (
+          grants[Permission.PERMISSIONS.ANDROID.RECORD_AUDIO] ===
+          Permission.RESULTS.GRANTED
+        ) {
+          console.log('권한 획득 성공');
+        } else {
+          console.log('권한 획득 실패');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+
+    await audioRecorderPlayerRef.current.startRecorder(undefined, {
+      AVFormatIDKeyIOS: AVEncodingOption.mp4, // ios 녹음 포맷, 기본으로 권한 요청 지원
+      OutputFormatAndroid: OutputFormatAndroidType.MPEG_4, // android 녹음 포멧, 권한 요청 필요
+    });
+
     sendMessageToWebView('onStartRecord');
   }, [sendMessageToWebView]);
 
-  const stopRecord = useCallback(() => {
-    // TODO: 오디오 파일 생성 -> sendMessageToWebView로 보내주기
-    console.log('stop-record');
-    const data = {};
-    sendMessageToWebView('onStopRecord', data);
+  const stopRecord = useCallback(async () => {
+    const filepath = await audioRecorderPlayerRef.current.stopRecorder();
+    const ext = filepath.split('.').pop();
+    const base64audio = await RNFS.readFile(filepath, 'base64'); // 오디오 데이터 base64로 인코딩
+
+    sendMessageToWebView('onStopRecord', {
+      audio: base64audio,
+      mimeType: 'audio/mp4',
+      ext,
+    });
   }, [sendMessageToWebView]);
 
-  const pauseRecord = useCallback(() => {
-    // TODO: 녹음 일시정지
-    console.log('pause-record');
+  const pauseRecord = useCallback(async () => {
+    await audioRecorderPlayerRef.current.pauseRecorder();
+
     sendMessageToWebView('onPauseRecord');
   }, [sendMessageToWebView]);
 
-  const resumeRecord = useCallback(() => {
-    // TODO: 녹음 재생
-    console.log('resume-record');
+  const resumeRecord = useCallback(async () => {
+    await audioRecorderPlayerRef.current.resumeRecorder();
+
     sendMessageToWebView('onResumeRecord');
   }, [sendMessageToWebView]);
 
