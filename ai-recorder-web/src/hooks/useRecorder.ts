@@ -1,10 +1,10 @@
-// import { transcribeAndSummarize } from '@/apis/transcribe';
 import transcribeAudio from '@/apis/transcribe';
+import { hasReactNativeWebview } from '@/constants';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
 import { useRecorderContext } from '@/contexts/RecorderContext';
 import { useToast } from '@/hooks/useToast';
 import { generateUuid } from '@/utils/generateUuid';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function useRecorder() {
@@ -21,6 +21,11 @@ export default function useRecorder() {
   const { showToast } = useToast();
   const { create } = useRecorderContext();
 
+  // RN 메시지 전송 함수
+  const postMessageToRN = useCallback((type: string, data?: any) => {
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ type, data }));
+  }, []);
+
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(() => {
       setTime((prev) => prev + 1);
@@ -35,18 +40,28 @@ export default function useRecorder() {
   }, []);
 
   const onPauseRecord = useCallback(() => {
+    if (hasReactNativeWebview) {
+      postMessageToRN('pause-record');
+      return;
+    }
+
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.pause();
       stopTimer();
     }
-  }, [stopTimer]);
+  }, [postMessageToRN, stopTimer]);
 
   const onResumeRecord = useCallback(() => {
+    if (hasReactNativeWebview) {
+      postMessageToRN('resume-record');
+      return;
+    }
+
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.resume();
       startTimer();
     }
-  }, [startTimer]);
+  }, [postMessageToRN, startTimer]);
 
   const onTranscibeAudio = useCallback(
     async (url: string) => {
@@ -83,20 +98,30 @@ export default function useRecorder() {
   );
 
   const onPressSave = useCallback(async () => {
+    if (hasReactNativeWebview) {
+      postMessageToRN('stop-record');
+      return;
+    }
+
     if (!audioUrl) {
       showToast('error', '녹음이 완료되지 않았습니다.');
       return;
     }
 
     if (mediaRecorderRef.current != null) mediaRecorderRef.current.stop();
-  }, [audioUrl, showToast]);
+  }, [audioUrl, postMessageToRN, showToast]);
 
   const record = useCallback(async () => {
+    if (hasReactNativeWebview) {
+      postMessageToRN('start-record');
+      return;
+    }
+
     try {
       const stream = await window.navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = 'audio/webm';
-
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
+
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.onstart = () => {
         setRecordState('recording');
@@ -105,7 +130,7 @@ export default function useRecorder() {
       };
       mediaRecorder.ondataavailable = (e) => audioChunksRef.current.push(e.data);
       mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: audioChunksRef.current[0].type });
+        const blob = new Blob(audioChunksRef.current, { type: audioChunksRef.current[0]?.type });
         audioChunksRef.current = [];
         const url = URL.createObjectURL(blob);
         onStopRecord({ url });
@@ -116,7 +141,7 @@ export default function useRecorder() {
       console.error(e);
       showToast('error', '녹음 권한을 허용해주세요');
     }
-  }, [onStopRecord, showToast, startTimer]);
+  }, [onStopRecord, postMessageToRN, showToast, startTimer]);
 
   const onPressRecord = useCallback(() => {
     if (recordState === 'recording') {
@@ -127,10 +152,44 @@ export default function useRecorder() {
       onResumeRecord();
       setRecordState('recording');
       showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
-    } else {
-      record();
-    }
+    } else record();
   }, [onPauseRecord, onResumeRecord, record, recordState, showToast]);
+
+  useEffect(() => {
+    if (hasReactNativeWebview) {
+      // RN 메시지 수신 함수
+      const handleMessage = (event: any) => {
+        console.log('handleMessage', event);
+        const { type } = JSON.parse(event.data);
+
+        if (type === 'onStartRecord') {
+          setRecordState('recording');
+          startTimer();
+          showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
+        } else if (type === 'onStopRecord') {
+          setRecordState(null);
+          // onStopRecord({ url });
+          // stream.getAudioTracks().forEach((track) => track.stop());
+        } else if (type === 'onPauseRecord') {
+          setRecordState('paused');
+          stopTimer();
+          showToast('success', TOAST_SUCCESS_MESSAGES.PAUSE_RECORD);
+        } else if (type === 'onResumeRecord') {
+          setRecordState('recording');
+          startTimer();
+          showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
+        }
+      };
+      // ios, android 모두 메시지 수신
+      window.addEventListener('message', handleMessage);
+      document.addEventListener('message', handleMessage);
+
+      return () => {
+        window.removeEventListener('message', handleMessage);
+        document.removeEventListener('message', handleMessage);
+      };
+    }
+  }, [showToast, startTimer, stopTimer]);
 
   return {
     recordState,
