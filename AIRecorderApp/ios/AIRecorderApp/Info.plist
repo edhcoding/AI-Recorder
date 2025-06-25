@@ -50,6 +50,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Give $(PRODUCT_NAME) permission to use your microphone. Your record wont be shared without your permission.</string>
+	<string>음성 녹음 및 AI 요약 기능을 위해 마이크 접근 권한이 필요합니다.</string>
 </dict>
 </plist>

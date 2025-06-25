@@ -40,6 +40,25 @@ export default function App() {
         console.warn(err);
         return;
       }
+    } else if (Platform.OS === 'ios') {
+      try {
+        const grants = await Permission.requestMultiple([
+          Permission.PERMISSIONS.IOS.MICROPHONE,
+        ]);
+
+        if (
+          grants[Permission.PERMISSIONS.IOS.MICROPHONE] ===
+          Permission.RESULTS.GRANTED
+        ) {
+          console.log('권한 획득 성공');
+        } else {
+          console.log('권한 획득 실패');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
     }
 
     await audioRecorderPlayerRef.current.startRecorder(undefined, {

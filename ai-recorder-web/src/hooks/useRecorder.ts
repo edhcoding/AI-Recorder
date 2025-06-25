@@ -3,6 +3,7 @@ import { hasReactNativeWebview } from '@/constants';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
 import { useRecorderContext } from '@/contexts/RecorderContext';
 import { useToast } from '@/hooks/useToast';
+import base64ToBlob from '@/utils/base64ToBlob';
 import { generateUuid } from '@/utils/generateUuid';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -64,7 +65,7 @@ export default function useRecorder() {
   }, [postMessageToRN, startTimer]);
 
   const onTranscibeAudio = useCallback(
-    async (url: string) => {
+    async (url: string, ext?: string) => {
       if (!url) return;
 
       try {
@@ -72,7 +73,7 @@ export default function useRecorder() {
 
         const response = await fetch(url);
         const audioBlob = await response.blob();
-        const { text, segments } = await transcribeAudio(audioBlob);
+        const { text, segments } = await transcribeAudio(audioBlob, ext);
         const id = generateUuid();
 
         create({ id, text, segments });
@@ -87,12 +88,12 @@ export default function useRecorder() {
   );
 
   const onStopRecord = useCallback(
-    ({ url }: { url: string }) => {
+    ({ url, ext }: { url: string; ext?: string }) => {
       setAudioUrl(url);
       setRecordState(null);
       stopTimer();
       showToast('success', TOAST_SUCCESS_MESSAGES.SAVE_RECORD);
-      onTranscibeAudio(url);
+      onTranscibeAudio(url, ext);
     },
     [onTranscibeAudio, showToast, stopTimer],
   );
@@ -169,9 +170,11 @@ export default function useRecorder() {
           startTimer();
           showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
         } else if (type === 'onStopRecord') {
+          const { audio, mimeType, ext } = data;
+          const blob = base64ToBlob(audio, mimeType);
+          const url = URL.createObjectURL(blob);
+          onStopRecord({ url, ext });
           setRecordState(null);
-          // onStopRecord({ url });
-          // stream.getAudioTracks().forEach((track) => track.stop());
         } else if (type === 'onPauseRecord') {
           setRecordState('paused');
           stopTimer();
@@ -191,7 +194,7 @@ export default function useRecorder() {
         document.removeEventListener('message', handleMessage);
       };
     }
-  }, [showToast, startTimer, stopTimer]);
+  }, [onStopRecord, showToast, startTimer, stopTimer]);
 
   return {
     recordState,

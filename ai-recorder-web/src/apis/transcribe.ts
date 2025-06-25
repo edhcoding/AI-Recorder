@@ -1,8 +1,8 @@
 // OpenAI의 Whisper API로 음성 파일을 텍스트로 변환하고, GPT-4o-mini API로 텍스트를 요약하는 API
-export default async function transcribeAudio(audioBlob: Blob) {
+export default async function transcribeAudio(audioBlob: Blob, ext?: string) {
   // 1. Speech to Text (음성 파일을 텍스트로 변환)
   const formData = new FormData(); // 폼 데이터
-  formData.append('file', audioBlob, 'recording.webm');
+  formData.append('file', audioBlob, `recording.${ext}`);
   formData.append('model', 'whisper-1');
   formData.append('language', 'ko');
   formData.append('response_format', 'verbose_json');
