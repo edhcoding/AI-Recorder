@@ -12,6 +12,8 @@ export default function useRecorder() {
   const [recordState, setRecordState] = useState<'recording' | 'paused' | null>(null);
   const [time, setTime] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [currentId, setCurrentId] = useState<string | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -20,7 +22,7 @@ export default function useRecorder() {
   const navigate = useNavigate();
 
   const { showToast } = useToast();
-  const { create } = useRecorderContext();
+  const { create, update } = useRecorderContext();
 
   // RN 메시지 전송 함수
   const postMessageToRN = useCallback((type: string, data?: any) => {
@@ -75,8 +77,9 @@ export default function useRecorder() {
         const audioBlob = await response.blob();
         const { text, segments } = await transcribeAudio(audioBlob, ext);
         const id = generateUuid();
+        setCurrentId(id);
 
-        create({ id, text, segments });
+        create({ id, text, segments, photos: [] });
         showToast('success', '녹음이 저장되었습니다.');
         navigate(`/recorder/${id}`);
       } catch (error) {
@@ -183,6 +186,11 @@ export default function useRecorder() {
           setRecordState('recording');
           startTimer();
           showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
+        } else if (type === 'onTakePhoto') {
+          const newPhotos = photos.concat([data]);
+          setPhotos(newPhotos);
+
+          if (currentId) update({ id: currentId, photos: newPhotos });
         }
       };
       // ios, android 모두 메시지 수신
@@ -194,12 +202,17 @@ export default function useRecorder() {
         document.removeEventListener('message', handleMessage);
       };
     }
-  }, [onStopRecord, showToast, startTimer, stopTimer]);
+  }, [currentId, onStopRecord, photos, showToast, startTimer, stopTimer, update]);
+
+  const onCamera = useCallback(() => {
+    postMessageToRN('open-camera');
+  }, [postMessageToRN]);
 
   return {
     recordState,
     time,
     onPressRecord,
     onPressSave,
+    onCamera,
   };
 }

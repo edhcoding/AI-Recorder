@@ -100,7 +100,7 @@ export default function App() {
         source={{
           uri:
             Platform.OS === 'android'
-              ? 'http://172.30.34.17:5173'
+              ? 'http://172.30.34.25:5173'
               : 'http://localhost:5173',
         }}
         onMessage={event => {

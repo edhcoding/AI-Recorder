@@ -1,22 +1,27 @@
 import BackButton from '@/components/BackButton';
+import { hasReactNativeWebview } from '@/constants';
 import { ROUTES } from '@/constants/route';
 import { Link, useParams } from 'react-router-dom';
 
 export type HeaderProps = {
   title?: string;
   onBack?: () => void;
+  onCamera?: () => void;
   showBackButton?: boolean;
   showLogo?: boolean;
   showCamera?: boolean;
+  showDetailCamera?: boolean;
   showTitle?: boolean;
 };
 
 export default function Heading({
   title,
   onBack,
+  onCamera,
   showBackButton = true,
   showLogo = false,
   showCamera = false,
+  showDetailCamera = false,
   showTitle = false,
 }: HeaderProps) {
   const params = useParams();
@@ -33,9 +38,14 @@ export default function Heading({
             </div>
           </Link>
         )}
-        {showCamera && (
-          <Link to={ROUTES.photo(params.recorderId)} className="absolute right-0 flex items-center">
-            <span className="material-icons size-6">camera_alt</span>
+        {showCamera && hasReactNativeWebview && (
+          <button type="button" onClick={onCamera} className="absolute right-0 flex items-center cursor-pointer">
+            <span className="material-icons text-3xl!">camera_alt</span>
+          </button>
+        )}
+        {showDetailCamera && hasReactNativeWebview && (
+          <Link to={ROUTES.photo(params.recorderId)} className="absolute right-0 flex items-center cursor-pointer">
+            <span className="material-icons text-3xl! text-neutral-600">image</span>
           </Link>
         )}
         {showTitle && (

@@ -47,7 +47,15 @@ export default function RecorderDetailPage() {
   }, [get, recorderId]);
 
   return (
-    <PageLayout headerProps={{ title: `${currentStep}`, showBackButton: true, showLogo: false, showTitle: true }}>
+    <PageLayout
+      headerProps={{
+        title: `${currentStep}`,
+        showBackButton: true,
+        showLogo: false,
+        showTitle: true,
+        showDetailCamera: true,
+      }}
+    >
       <div className="flex flex-col flex-1 overflow-auto">
         <Funnel>
           <Step name="음성기록">

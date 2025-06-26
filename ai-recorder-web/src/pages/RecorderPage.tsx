@@ -4,10 +4,19 @@ import RecordControls from '@/components/RecordControls';
 import useRecorder from '@/hooks/useRecorder';
 
 export default function RecorderPage() {
-  const { recordState, time, onPressRecord, onPressSave } = useRecorder();
+  const { recordState, time, onPressRecord, onPressSave, onCamera } = useRecorder();
 
   return (
-    <PageLayout headerProps={{ title: '녹음하기', showBackButton: true, showLogo: false, showTitle: true }}>
+    <PageLayout
+      headerProps={{
+        title: '녹음하기',
+        showBackButton: true,
+        showLogo: false,
+        showTitle: true,
+        showCamera: true,
+        onCamera,
+      }}
+    >
       <div className="flex-1 flex flex-col justify-center items-center relative">
         <RecordButton recordState={recordState} onPress={onPressRecord} />
         <RecordControls recordState={recordState} time={time} onPressRecord={onPressRecord} onPressSave={onPressSave} />

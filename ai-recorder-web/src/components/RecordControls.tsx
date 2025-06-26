@@ -58,7 +58,7 @@ export default function RecordControls({ recordState, time, onPressRecord, onPre
         </div>
       ) : (
         <p className="absolute top-16 text-2xl text-center">
-          녹음 버튼을 눌러 <br /> 녹음을 시작해주세요!!
+          마이크 버튼을 눌러 <br /> 녹음을 시작하세요!!
         </p>
       )}
     </div>

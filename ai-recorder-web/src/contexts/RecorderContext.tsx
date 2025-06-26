@@ -5,6 +5,7 @@ export type RecorderData = {
   text: string;
   segments: { start: number; end: number; text: string }[];
   summary?: string;
+  photos?: string[];
 };
 
 type RecorderDatabase = { [id: string]: RecorderData | undefined };
@@ -12,7 +13,7 @@ type RecorderDatabase = { [id: string]: RecorderData | undefined };
 type RecorderContextType = {
   get: ({ id }: { id: string }) => RecorderData | undefined;
   create: (data: RecorderData) => void;
-  update: ({ id, summary }: { id: string; summary?: string }) => void;
+  update: ({ id, summary, photos }: { id: string; summary?: string; photos?: string[] }) => void;
   getAll: () => RecorderData[];
 };
 
@@ -61,6 +62,20 @@ const DUMMY_DATA: RecorderDatabase = {
     ],
     summary:
       '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
+    photos: [
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+    ],
   },
 };
 
@@ -100,7 +115,7 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
     setRecorderData((prev) => ({ ...prev, [data.id]: data }));
   }, []);
 
-  const update = useCallback(({ id, summary }: { id: string; summary?: string }) => {
+  const update = useCallback(({ id, summary, photos }: { id: string; summary?: string; photos?: string[] }) => {
     setRecorderData((prev) => {
       const prevData = prev[id];
       if (prevData == null) return prev;
@@ -110,6 +125,7 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
         [id]: {
           ...prevData,
           ...(summary != null ? { summary } : {}),
+          ...(photos != null ? { photos } : []),
         },
       };
     });

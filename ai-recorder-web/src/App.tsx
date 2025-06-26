@@ -4,6 +4,7 @@ import ToastList from '@/components/Toast/ToastList';
 import { ROUTES } from '@/constants/route';
 import { RecorderProvider } from '@/contexts/RecorderContext';
 import HomePage from '@/pages/HomePage';
+import PhotoPage from '@/pages/PhotoPage';
 import RecorderDetailPage from '@/pages/RecorderDetailPage';
 import RecorderPage from '@/pages/RecorderPage';
 import { HelmetProvider } from 'react-helmet-async';
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.photo(),
-        element: <div>photo</div>,
+        element: <PhotoPage />,
       },
       {
         path: ROUTES.other,

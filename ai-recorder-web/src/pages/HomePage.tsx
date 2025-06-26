@@ -12,7 +12,7 @@ export default function HomePage() {
 
   return (
     <PageLayout headerProps={{ showBackButton: false, showLogo: true, showTitle: false }}>
-      <div className="flex flex-col items-center text-center">
+      <div className="flex flex-col items-center justify-center text-center h-full">
         <div className="size-48 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
           <div className="size-32 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
             <span className="material-icons text-white text-4xl">mic</span>
