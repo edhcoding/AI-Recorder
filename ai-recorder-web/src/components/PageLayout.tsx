@@ -11,7 +11,7 @@ export default function PageLayout({ children, disableHeader, headerProps }: Pro
   return (
     <div className="h-dvh bg-bg relative flex flex-col">
       {!disableHeader && <Heading {...headerProps} />}
-      <main className="flex-1 relative max-w-2xl flex flex-col p-4 overflow-hidden">{children}</main>
+      <main className="flex-1 relative max-w-2xl flex flex-col p-4">{children}</main>
     </div>
   );
 }
