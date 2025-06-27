@@ -140,7 +140,7 @@ export default function App() {
       <WebView
         ref={webViewRef}
         source={{
-          uri: 'https://4caa-125-139-208-49.ngrok-free.app/recorder/1721464473516',
+          uri: 'https://4caa-125-139-208-49.ngrok-free.app',
         }}
         onMessage={event => {
           console.log('event.nativeEvent.data', event.nativeEvent.data);
