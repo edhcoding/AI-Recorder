@@ -1,5 +1,4 @@
 import BackButton from '@/components/BackButton';
-import { hasReactNativeWebview } from '@/constants';
 import { ROUTES } from '@/constants/route';
 import { Link, useParams } from 'react-router-dom';
 
@@ -25,6 +24,7 @@ export default function Heading({
   showTitle = false,
 }: HeaderProps) {
   const params = useParams();
+  const hasReactNativeWebview = typeof window !== 'undefined' && window.ReactNativeWebView != null;
 
   return (
     <div className="sticky top-0 z-10 h-16 border-b border-gray-200 p-4 bg-white/40 backdrop-blur-md">

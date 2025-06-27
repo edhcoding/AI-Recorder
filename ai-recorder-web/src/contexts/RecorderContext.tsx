@@ -13,7 +13,7 @@ type RecorderDatabase = { [id: string]: RecorderData | undefined };
 type RecorderContextType = {
   get: ({ id }: { id: string }) => RecorderData | undefined;
   create: (data: RecorderData) => void;
-  update: ({ id, summary, photos }: { id: string; summary?: string; photos?: string[] }) => void;
+  update: ({ id, summary }: { id: string; summary?: string }) => void;
   getAll: () => RecorderData[];
 };
 
@@ -115,7 +115,7 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
     setRecorderData((prev) => ({ ...prev, [data.id]: data }));
   }, []);
 
-  const update = useCallback(({ id, summary, photos }: { id: string; summary?: string; photos?: string[] }) => {
+  const update = useCallback(({ id, summary }: { id: string; summary?: string }) => {
     setRecorderData((prev) => {
       const prevData = prev[id];
       if (prevData == null) return prev;
@@ -125,7 +125,6 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
         [id]: {
           ...prevData,
           ...(summary != null ? { summary } : {}),
-          ...(photos != null ? { photos } : []),
         },
       };
     });

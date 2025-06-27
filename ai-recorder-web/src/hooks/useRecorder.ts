@@ -1,5 +1,4 @@
 import transcribeAudio from '@/apis/transcribe';
-import { hasReactNativeWebview } from '@/constants';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
 import { useRecorderContext } from '@/contexts/RecorderContext';
 import { useToast } from '@/hooks/useToast';
@@ -13,7 +12,8 @@ export default function useRecorder() {
   const [time, setTime] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
-  const [currentId, setCurrentId] = useState<string | null>(null);
+  console.log('audioUrl', audioUrl);
+  console.log('photos', photos);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -22,7 +22,9 @@ export default function useRecorder() {
   const navigate = useNavigate();
 
   const { showToast } = useToast();
-  const { create, update } = useRecorderContext();
+  const { create } = useRecorderContext();
+
+  const hasReactNativeWebview = typeof window !== 'undefined' && window.ReactNativeWebView != null;
 
   // RN 메시지 전송 함수
   const postMessageToRN = useCallback((type: string, data?: any) => {
@@ -52,7 +54,7 @@ export default function useRecorder() {
       mediaRecorderRef.current.pause();
       stopTimer();
     }
-  }, [postMessageToRN, stopTimer]);
+  }, [hasReactNativeWebview, postMessageToRN, stopTimer]);
 
   const onResumeRecord = useCallback(() => {
     if (hasReactNativeWebview) {
@@ -64,7 +66,7 @@ export default function useRecorder() {
       mediaRecorderRef.current.resume();
       startTimer();
     }
-  }, [postMessageToRN, startTimer]);
+  }, [hasReactNativeWebview, postMessageToRN, startTimer]);
 
   const onTranscibeAudio = useCallback(
     async (url: string, ext?: string) => {
@@ -77,7 +79,6 @@ export default function useRecorder() {
         const audioBlob = await response.blob();
         const { text, segments } = await transcribeAudio(audioBlob, ext);
         const id = generateUuid();
-        setCurrentId(id);
 
         create({ id, text, segments, photos: [] });
         showToast('success', '녹음이 저장되었습니다.');
@@ -113,7 +114,7 @@ export default function useRecorder() {
     }
 
     if (mediaRecorderRef.current != null) mediaRecorderRef.current.stop();
-  }, [audioUrl, postMessageToRN, showToast]);
+  }, [audioUrl, hasReactNativeWebview, postMessageToRN, showToast]);
 
   const record = useCallback(async () => {
     if (hasReactNativeWebview) {
@@ -145,7 +146,7 @@ export default function useRecorder() {
       console.error(e);
       showToast('error', '녹음 권한을 허용해주세요');
     }
-  }, [onStopRecord, postMessageToRN, showToast, startTimer]);
+  }, [hasReactNativeWebview, onStopRecord, postMessageToRN, showToast, startTimer]);
 
   const onPressRecord = useCallback(() => {
     if (recordState === 'recording') {
@@ -165,8 +166,8 @@ export default function useRecorder() {
       const handleMessage = (event: any) => {
         console.log('web handleMessage event', event);
         const { type, data } = JSON.parse(event.data);
-        console.log('type', type);
-        console.log('data', data);
+        console.log('RN  메시지 수신 type', type);
+        console.log('RN  메시지 수신 data', data);
 
         if (type === 'onStartRecord') {
           setRecordState('recording');
@@ -187,10 +188,7 @@ export default function useRecorder() {
           startTimer();
           showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
         } else if (type === 'onTakePhoto') {
-          const newPhotos = photos.concat([data]);
-          setPhotos(newPhotos);
-
-          if (currentId) update({ id: currentId, photos: newPhotos });
+          setPhotos((prev) => prev.concat([data]));
         }
       };
       // ios, android 모두 메시지 수신
@@ -202,7 +200,7 @@ export default function useRecorder() {
         document.removeEventListener('message', handleMessage);
       };
     }
-  }, [currentId, onStopRecord, photos, showToast, startTimer, stopTimer, update]);
+  }, [hasReactNativeWebview, onStopRecord, photos, showToast, startTimer, stopTimer]);
 
   const onCamera = useCallback(() => {
     postMessageToRN('open-camera');

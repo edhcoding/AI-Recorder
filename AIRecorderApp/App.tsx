@@ -1,19 +1,31 @@
-import { Platform, SafeAreaView } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import WebView from 'react-native-webview';
 import { styles } from './styles';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import AudioRecorderPlayer, {
   AVEncodingOption,
   OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 import Permission from 'react-native-permissions';
 import RNFS from 'react-native-fs';
+import { Camera, useCameraDevice } from 'react-native-vision-camera';
 
 export default function App() {
+  const cameraRef = useRef<Camera | null>(null);
   const webViewRef = useRef<WebView | null>(null);
   const audioRecorderPlayerRef = useRef<AudioRecorderPlayer>(
     new AudioRecorderPlayer(),
   );
+  const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
+
+  const device = useCameraDevice('back');
 
   const sendMessageToWebView = useCallback((type: string, data?: any) => {
     const message = JSON.stringify({ type, data });
@@ -72,7 +84,7 @@ export default function App() {
   const stopRecord = useCallback(async () => {
     const filepath = await audioRecorderPlayerRef.current.stopRecorder();
     const ext = filepath.split('.').pop();
-    const base64audio = await RNFS.readFile(filepath, 'base64'); // 오디오 데이터 base64로 인코딩
+    const base64audio = await RNFS.readFile(filepath, 'base64');
 
     sendMessageToWebView('onStopRecord', {
       audio: base64audio,
@@ -91,6 +103,36 @@ export default function App() {
     await audioRecorderPlayerRef.current.resumeRecorder();
 
     sendMessageToWebView('onResumeRecord');
+  }, [sendMessageToWebView]);
+
+  const openCamera = useCallback(async () => {
+    const permission = await Camera.requestCameraPermission();
+
+    if (permission === 'granted') {
+      console.log('카메라 권한 획득 성공');
+      setIsCameraOpen(true);
+    } else {
+      console.log('카메라 권한 획득 실패');
+      setIsCameraOpen(false);
+    }
+  }, []);
+
+  const closeCamera = useCallback(() => {
+    setIsCameraOpen(false);
+  }, []);
+
+  const onPressPhotoButton = useCallback(async () => {
+    const file = await cameraRef.current?.takePhoto({
+      flash: 'off',
+    });
+
+    if (file != null) {
+      const base64Image = await RNFS.readFile(file.path, 'base64');
+      // data:[<MIME-type>][;base64],<data> 형식으로 변환
+      const imageDataUrl = `data:image/jpeg;base64,${base64Image}`;
+
+      sendMessageToWebView('onTakePhoto', imageDataUrl);
+    }
   }, [sendMessageToWebView]);
 
   return (
@@ -115,10 +157,34 @@ export default function App() {
             pauseRecord();
           } else if (type === 'resume-record') {
             resumeRecord();
+          } else if (type === 'open-camera') {
+            openCamera();
           }
         }}
         webviewDebuggingEnabled={true}
       />
+      {isCameraOpen && device != null && (
+        <View style={styles.camera}>
+          <Camera
+            photo
+            isActive
+            ref={cameraRef}
+            device={device}
+            photoQualityBalance="speed"
+            style={StyleSheet.absoluteFill}
+          />
+          <TouchableOpacity
+            style={styles.cameraCloseButton}
+            onPress={closeCamera}
+          >
+            <Text style={styles.cameraCloseText}>CLOSE</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cameraPhotoButton}
+            onPress={onPressPhotoButton}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 }

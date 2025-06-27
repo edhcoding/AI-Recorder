@@ -15,11 +15,12 @@ export default function BackButton({ onBack, ...props }: Props) {
     if (location.pathname === ROUTES.home) return;
 
     if (window.history.length > 1) {
-      const previousUrl = document.referrer; // 이전 페이지의 URL
-      const currentDomain = window.location.origin; // 현재 도메인
+      const previousUrl = document.referrer;
+      const currentDomain = window.location.origin;
 
-      if (previousUrl && previousUrl.startsWith(currentDomain)) window.history.back();
-      else navigate(ROUTES.home);
+      // 외부 사이트에서 온 경우
+      if (previousUrl && !previousUrl.startsWith(currentDomain)) navigate(ROUTES.home);
+      else window.history.back(); // 같은 사이트 내 이동
     } else navigate(ROUTES.home);
   }, [location.pathname, navigate, onBack]);
 
