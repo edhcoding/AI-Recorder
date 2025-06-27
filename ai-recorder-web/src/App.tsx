@@ -2,6 +2,7 @@ import Layout from '@/components/Layout';
 import { ToastProvider } from '@/components/Toast/ToastContext';
 import ToastList from '@/components/Toast/ToastList';
 import { ROUTES } from '@/constants/route';
+import { ModalProvider } from '@/contexts/ModalContext';
 import { RecorderProvider } from '@/contexts/RecorderContext';
 import HomePage from '@/pages/HomePage';
 import PhotoPage from '@/pages/PhotoPage';
@@ -42,10 +43,12 @@ export default function App() {
   return (
     <HelmetProvider>
       <RecorderProvider>
-        <ToastProvider>
-          <ToastList />
-          <RouterProvider router={router} />
-        </ToastProvider>
+        <ModalProvider>
+          <ToastProvider>
+            <ToastList />
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </ModalProvider>
       </RecorderProvider>
     </HelmetProvider>
   );

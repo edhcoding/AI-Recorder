@@ -1,12 +1,24 @@
+import Modal from '@/components/Modal';
 import PageLayout from '@/components/PageLayout';
 import { useRecorderContext, type RecorderData } from '@/contexts/RecorderContext';
-import { useEffect, useState } from 'react';
+import { useModal } from '@/hooks/useModal';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function PhotoPage() {
   const [data, setData] = useState<RecorderData | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const { recorderId } = useParams();
   const { get } = useRecorderContext();
+  const { isModalOpen, openModal, closeModal } = useModal();
+
+  const onClickPhoto = useCallback(
+    (photo: string) => {
+      openModal();
+      setSelectedPhoto(photo);
+    },
+    [openModal],
+  );
 
   useEffect(() => {
     if (typeof recorderId === 'string') {
@@ -19,8 +31,6 @@ export default function PhotoPage() {
       }
     }
   }, [get, recorderId]);
-
-  console.log(data?.photos);
 
   return (
     <PageLayout
@@ -36,7 +46,13 @@ export default function PhotoPage() {
           {data?.photos != null &&
             data.photos.map((photo, index) => {
               return (
-                <img className="aspect-square object-cover w-full" key={index} src={photo} alt={`Photo ${index + 1}`} />
+                <img
+                  className="aspect-square object-cover w-full"
+                  key={index}
+                  src={photo}
+                  alt={`Photo ${index + 1}`}
+                  onClick={() => onClickPhoto(photo)}
+                />
               );
             })}
         </div>
@@ -50,6 +66,19 @@ export default function PhotoPage() {
               녹음과 함께 사진을 찍어 그 날의 기록을 남겨보세요.
             </p>
           </div>
+        )}
+        {isModalOpen && selectedPhoto != null && (
+          <Modal>
+            <div className="relative">
+              <div className="fixed top-0 left-0 size-full bg-black/40" onClick={closeModal} />
+              <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-sm h-sm bg-bg rounded-lg p-3">
+                <button type="button" onClick={closeModal} className="absolute top-0 right-0">
+                  <span className="material-icons font-bold! text-2xl!">close</span>
+                </button>
+                <img src={selectedPhoto} alt="선택한 사진" className="aspect-square object-cover w-full" />
+              </div>
+            </div>
+          </Modal>
         )}
       </div>
     </PageLayout>
