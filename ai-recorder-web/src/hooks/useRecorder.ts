@@ -12,7 +12,6 @@ export default function useRecorder() {
   const [time, setTime] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
-  console.log('audioUrl', audioUrl);
   console.log('photos', photos);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -80,7 +79,7 @@ export default function useRecorder() {
         const { text, segments } = await transcribeAudio(audioBlob, ext);
         const id = generateUuid();
 
-        create({ id, text, segments, photos: [] });
+        create({ id, text, segments, photos });
         showToast('success', '녹음이 저장되었습니다.');
         navigate(`/recorder/${id}`);
       } catch (error) {
@@ -88,7 +87,7 @@ export default function useRecorder() {
         showToast('error', '음성 변환에 실패했습니다.');
       }
     },
-    [create, navigate, showToast],
+    [create, navigate, photos, showToast],
   );
 
   const onStopRecord = useCallback(

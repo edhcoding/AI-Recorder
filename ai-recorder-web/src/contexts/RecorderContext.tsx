@@ -19,67 +19,7 @@ type RecorderContextType = {
 
 const RecorderContext = createContext<RecorderContextType | undefined>(undefined);
 
-const DUMMY_DATA: RecorderDatabase = {
-  '1721464473516': {
-    id: '1721464473516',
-    text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다. 설치 과정이 필요 없으며 사용자는 URL을 통해 쉽게 접근할 수 있습니다. 웹앱은 서버와 클라이언트 간의 상호작용을 통해 실시간으로 데이터가 업데이트되며 HTML, CSS, JavaScript 등의 웹기술을 사용하여 개발됩니다. 이를 통해 사용자들은 이메일 확인, 소셜네트워킹, 문서 편집, 쇼핑 등 다양한 작업을 웹브라우저 하나만으로 간편하게 처리할 수 있습니다.',
-    segments: [
-      {
-        start: 0,
-        end: 11,
-        text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다.',
-      },
-      {
-        start: 11,
-        end: 17,
-        text: '설치 과정이 필요 없으며 사용자는 URL을 통해 쉽게 접근할 수 있습니다.',
-      },
-      {
-        start: 17,
-        end: 23,
-        text: '웹앱은 서버와 클라이언트 간의 상호작용을 통해 실시간으로 데이터가 업데이트되며',
-      },
-      {
-        start: 23,
-        end: 28,
-        text: 'HTML, CSS, JavaScript 등의 웹기술을 사용하여 개발됩니다.',
-      },
-      {
-        start: 28,
-        end: 34,
-        text: '이를 통해 사용자들은 이메일 확인, 소셜네트워킹, 문서 편집, 쇼핑 등',
-      },
-      {
-        start: 34,
-        end: 39,
-        text: '다양한 작업을 웹브라우저 하나만으로 간편하게 처리할 수 있습니다.',
-      },
-      {
-        start: 39,
-        end: 45,
-        text: '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
-      },
-    ],
-    summary:
-      '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
-    photos: [
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
-    ],
-  },
-};
-
-// const DUMMY_DATA2: RecorderDatabase = {
+// const DUMMY_DATA: RecorderDatabase = {
 //   '1721464473516': {
 //     id: '1721464473516',
 //     text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다. 설치 과정이 필요 없으며 사용자는 URL을 통해 쉽게 접근할 수 있습니다. 웹앱은 서버와 클라이언트 간의 상호작용을 통해 실시간으로 데이터가 업데이트되며 HTML, CSS, JavaScript 등의 웹기술을 사용하여 개발됩니다. 이를 통해 사용자들은 이메일 확인, 소셜네트워킹, 문서 편집, 쇼핑 등 다양한 작업을 웹브라우저 하나만으로 간편하게 처리할 수 있습니다.',
@@ -89,16 +29,76 @@ const DUMMY_DATA: RecorderDatabase = {
 //         end: 11,
 //         text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다.',
 //       },
+//       {
+//         start: 11,
+//         end: 17,
+//         text: '설치 과정이 필요 없으며 사용자는 URL을 통해 쉽게 접근할 수 있습니다.',
+//       },
+//       {
+//         start: 17,
+//         end: 23,
+//         text: '웹앱은 서버와 클라이언트 간의 상호작용을 통해 실시간으로 데이터가 업데이트되며',
+//       },
+//       {
+//         start: 23,
+//         end: 28,
+//         text: 'HTML, CSS, JavaScript 등의 웹기술을 사용하여 개발됩니다.',
+//       },
+//       {
+//         start: 28,
+//         end: 34,
+//         text: '이를 통해 사용자들은 이메일 확인, 소셜네트워킹, 문서 편집, 쇼핑 등',
+//       },
+//       {
+//         start: 34,
+//         end: 39,
+//         text: '다양한 작업을 웹브라우저 하나만으로 간편하게 처리할 수 있습니다.',
+//       },
+//       {
+//         start: 39,
+//         end: 45,
+//         text: '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
+//       },
 //     ],
 //     summary:
 //       '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
+//     photos: [
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ZkAAAAASUVORK5CYII=',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5/hPwAF/gL+QnQnAAAAAElFTkSuQmCC',
+//     ],
 //   },
 // };
 
+const DUMMY_DATA2: RecorderDatabase = {
+  '1721464473516': {
+    id: '1721464473516',
+    text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다. 설치 과정이 필요 없으며 사용자는 URL을 통해 쉽게 접근할 수 있습니다. 웹앱은 서버와 클라이언트 간의 상호작용을 통해 실시간으로 데이터가 업데이트되며 HTML, CSS, JavaScript 등의 웹기술을 사용하여 개발됩니다. 이를 통해 사용자들은 이메일 확인, 소셜네트워킹, 문서 편집, 쇼핑 등 다양한 작업을 웹브라우저 하나만으로 간편하게 처리할 수 있습니다.',
+    segments: [
+      {
+        start: 0,
+        end: 11,
+        text: '웹앱은 웹브라우저를 통해 접근할 수 있는 애플리케이션 소프트웨어로 인터넷 연결만 있으면 어디서나 사용할 수 있습니다.',
+      },
+    ],
+    summary:
+      '웹앱은 인터넷만 있으면 설치 없이 웹브라우저로 바로 사용할 수 있는 편리한 애플리케이션입니다. 실시간으로 데이터가 업데이트되며, 다양한 작업을 간편하게 처리할 수 있습니다.',
+  },
+};
+
 export const RecorderProvider = ({ children }: { children: ReactNode }) => {
   // const [recorderData, setRecorderData] = useState<RecorderDatabase>({});
-  const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA);
-  // const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA2);
+  // const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA);
+  const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA2);
 
   const get = useCallback(
     ({ id }: { id: string }) => {
