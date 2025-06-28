@@ -10,6 +10,10 @@ export default function HomePage() {
     navigate(ROUTES.recorder);
   }, [navigate]);
 
+  const onClickRecorderList = useCallback(() => {
+    navigate(ROUTES.recorderList);
+  }, [navigate]);
+
   return (
     <PageLayout headerProps={{ showBackButton: false, showLogo: true, showTitle: false }}>
       <div className="flex flex-col items-center justify-center text-center h-full">
@@ -25,14 +29,24 @@ export default function HomePage() {
           텍스트로 변환해드립니다
         </p>
 
-        <button
-          type="button"
-          onClick={onClickRecorder}
-          className="bg-primary text-white py-2 px-4 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer mb-6"
-        >
-          <span className="material-icons text-3xl!">mic</span>
-          <span className="text-md ml-1">녹음 시작하기</span>
-        </button>
+        <div className="flex flex-col gap-2 mb-6">
+          <button
+            type="button"
+            onClick={onClickRecorder}
+            className="bg-primary text-white py-2 px-10 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer"
+          >
+            <span className="material-icons text-3xl!">mic</span>
+            <span className="text-md ml-1">녹음 시작하기</span>
+          </button>
+          <button
+            type="button"
+            onClick={onClickRecorderList}
+            className="bg-black text-bg py-2 px-4 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer"
+          >
+            <span className="material-icons text-3xl!">folder</span>
+            <span className="text-md ml-1">녹음 리스트</span>
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 mb-12 w-full max-w-md">
           <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">

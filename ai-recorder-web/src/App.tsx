@@ -3,10 +3,12 @@ import { ToastProvider } from '@/components/Toast/ToastContext';
 import ToastList from '@/components/Toast/ToastList';
 import { ROUTES } from '@/constants/route';
 import { ModalProvider } from '@/contexts/ModalContext';
-import { RecorderProvider } from '@/contexts/RecorderContext';
+import { RecorderProvider } from '@/contexts/RecorderDataContext';
+import NotFoundPage from '@/pages/404';
 import HomePage from '@/pages/HomePage';
 import PhotoPage from '@/pages/PhotoPage';
 import RecorderDetailPage from '@/pages/RecorderDetailPage';
+import RecorderListPage from '@/pages/RecorderListPage';
 import RecorderPage from '@/pages/RecorderPage';
 import { HelmetProvider } from 'react-helmet-async';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -32,8 +34,12 @@ const router = createBrowserRouter([
         element: <PhotoPage />,
       },
       {
+        path: ROUTES.recorderList,
+        element: <RecorderListPage />,
+      },
+      {
         path: ROUTES.other,
-        element: <div>404</div>,
+        element: <NotFoundPage />,
       },
     ],
   },
