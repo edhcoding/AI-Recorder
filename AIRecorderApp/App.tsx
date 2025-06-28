@@ -15,7 +15,10 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import Permission from 'react-native-permissions';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
+
+const DATABASE_KEY = 'database' as const;
 
 export default function App() {
   const cameraRef = useRef<Camera | null>(null);
@@ -135,6 +138,29 @@ export default function App() {
     }
   }, [sendMessageToWebView]);
 
+  const loadDatabase = useCallback(async () => {
+    const data = await AsyncStorage.getItem(DATABASE_KEY);
+    const database = data != null ? JSON.parse(data) : {};
+
+    sendMessageToWebView('onLoadDatabase', database);
+  }, [sendMessageToWebView]);
+
+  const saveDatabase = useCallback(async (database: any) => {
+    await AsyncStorage.setItem(DATABASE_KEY, JSON.stringify(database));
+  }, []);
+
+  const deleteDatabase = useCallback(
+    async (data: any) => {
+      const id = data.id;
+      const dbString = await AsyncStorage.getItem(DATABASE_KEY);
+      const database = dbString != null ? JSON.parse(dbString) : {};
+      delete database[id];
+      await AsyncStorage.setItem(DATABASE_KEY, JSON.stringify(database));
+      sendMessageToWebView('onLoadDatabase', database);
+    },
+    [sendMessageToWebView],
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <WebView
@@ -144,7 +170,7 @@ export default function App() {
         }}
         onMessage={event => {
           console.log('event.nativeEvent.data', event.nativeEvent.data);
-          const { type } = JSON.parse(event.nativeEvent.data);
+          const { type, data } = JSON.parse(event.nativeEvent.data);
 
           if (type === 'start-record') {
             startRecord();
@@ -156,6 +182,12 @@ export default function App() {
             resumeRecord();
           } else if (type === 'open-camera') {
             openCamera();
+          } else if (type === 'load-database') {
+            loadDatabase();
+          } else if (type === 'save-database') {
+            saveDatabase(data);
+          } else if (type === 'delete-database') {
+            deleteDatabase(data);
           }
         }}
         webviewDebuggingEnabled={true}

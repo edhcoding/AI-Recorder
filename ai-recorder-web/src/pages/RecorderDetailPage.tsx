@@ -1,6 +1,6 @@
 import summaryText from '@/apis/summary';
 import PageLayout from '@/components/PageLayout';
-import { useRecorderContext, type RecorderData } from '@/contexts/RecorderContext';
+import { useRecorderContext, type RecorderData } from '@/contexts/RecorderDataContext';
 import useFunnel from '@/hooks/useFunnel';
 import { useToast } from '@/hooks/useToast';
 import { formatTime } from '@/utils/formatTime';

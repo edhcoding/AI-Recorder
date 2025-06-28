@@ -1,6 +1,6 @@
 import transcribeAudio from '@/apis/transcribe';
 import { TOAST_SUCCESS_MESSAGES } from '@/constants/toast';
-import { useRecorderContext } from '@/contexts/RecorderContext';
+import { useRecorderContext } from '@/contexts/RecorderDataContext';
 import { useToast } from '@/hooks/useToast';
 import base64ToBlob from '@/utils/base64ToBlob';
 import { generateUuid } from '@/utils/generateUuid';
@@ -79,7 +79,7 @@ export default function useRecorder() {
         const { text, segments } = await transcribeAudio(audioBlob, ext);
         const id = generateUuid();
 
-        create({ id, text, segments, photos });
+        create({ id, text, segments, photos, createdAt: Date.now() });
         showToast('success', '녹음이 저장되었습니다.');
         navigate(`/recorder/${id}`);
       } catch (error) {

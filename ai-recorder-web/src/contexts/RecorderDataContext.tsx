@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type RecorderData = {
   id: string;
@@ -6,6 +6,7 @@ export type RecorderData = {
   segments: { start: number; end: number; text: string }[];
   summary?: string;
   photos?: string[];
+  createdAt: number;
 };
 
 type RecorderDatabase = { [id: string]: RecorderData | undefined };
@@ -90,6 +91,7 @@ const DUMMY_DATA: RecorderDatabase = {
       // 연보라색
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9Qz0ADAAJAAfQvOqIAAAAASUVORK5CYII=',
     ],
+    createdAt: Date.now(),
   },
 };
 
@@ -113,6 +115,9 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
   // const [recorderData, setRecorderData] = useState<RecorderDatabase>({});
   const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA);
   // const [recorderData, setRecorderData] = useState<RecorderDatabase>(DUMMY_DATA2);
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  const hasReactNativeWebview = typeof window !== 'undefined' && window.ReactNativeWebView != null;
 
   const get = useCallback(
     ({ id }: { id: string }) => {
@@ -143,6 +148,37 @@ export const RecorderProvider = ({ children }: { children: ReactNode }) => {
       };
     });
   }, []);
+
+  useEffect(() => {
+    if (!loaded && hasReactNativeWebview)
+      window.ReactNativeWebView?.postMessage(JSON.stringify({ type: 'load-database' }));
+  }, [hasReactNativeWebview, loaded]);
+
+  useEffect(() => {
+    if (loaded && hasReactNativeWebview)
+      window.ReactNativeWebView?.postMessage(JSON.stringify({ type: 'save-database', data: recorderData }));
+  }, [loaded, hasReactNativeWebview, recorderData]);
+
+  useEffect(() => {
+    if (hasReactNativeWebview) {
+      const handleMessage = (event: any) => {
+        const { type, data } = JSON.parse(event.data);
+
+        if (type === 'onLoadDatabase') {
+          setRecorderData(data);
+          setLoaded(true);
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+      document.addEventListener('message', handleMessage);
+
+      return () => {
+        window.removeEventListener('message', handleMessage);
+        document.removeEventListener('message', handleMessage);
+      };
+    }
+  }, [hasReactNativeWebview]);
 
   return <RecorderContext.Provider value={{ get, getAll, create, update }}>{children}</RecorderContext.Provider>;
 };
