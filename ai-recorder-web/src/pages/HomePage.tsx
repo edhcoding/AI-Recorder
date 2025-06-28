@@ -78,6 +78,21 @@ export default function HomePage() {
               <p className="text-sm text-gray-600">녹음 내용을 안전하게 보관</p>
             </div>
           </div>
+
+          <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+            <div className="size-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="material-icons text-primary text-xl">photo_camera</span>
+            </div>
+            <div className="text-left">
+              <h3 className="font-semibold text-primary flex items-center">
+                사진 첨부
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded ml-1 align-middle">
+                  앱 전용
+                </span>
+              </h3>
+              <p className="text-sm text-gray-600">녹음과 함께 사진도 기록</p>
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>
