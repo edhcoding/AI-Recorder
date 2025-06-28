@@ -10,9 +10,7 @@ import { useNavigate } from 'react-router-dom';
 export default function useRecorder() {
   const [recordState, setRecordState] = useState<'recording' | 'paused' | null>(null);
   const [time, setTime] = useState<number>(0);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
-  console.log('photos', photos);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -68,7 +66,7 @@ export default function useRecorder() {
   }, [hasReactNativeWebview, postMessageToRN, startTimer]);
 
   const onTranscibeAudio = useCallback(
-    async (url: string, ext?: string) => {
+    async (url: string) => {
       if (!url) return;
 
       try {
@@ -76,7 +74,7 @@ export default function useRecorder() {
 
         const response = await fetch(url);
         const audioBlob = await response.blob();
-        const { text, segments } = await transcribeAudio(audioBlob, ext);
+        const { text, segments } = await transcribeAudio(audioBlob);
         const id = generateUuid();
 
         create({ id, text, segments, photos, createdAt: Date.now() });
@@ -91,12 +89,11 @@ export default function useRecorder() {
   );
 
   const onStopRecord = useCallback(
-    ({ url, ext }: { url: string; ext?: string }) => {
-      setAudioUrl(url);
+    ({ url }: { url: string }) => {
       setRecordState(null);
       stopTimer();
       showToast('success', TOAST_SUCCESS_MESSAGES.SAVE_RECORD);
-      onTranscibeAudio(url, ext);
+      onTranscibeAudio(url);
     },
     [onTranscibeAudio, showToast, stopTimer],
   );
@@ -107,13 +104,8 @@ export default function useRecorder() {
       return;
     }
 
-    if (!audioUrl) {
-      showToast('error', '녹음이 완료되지 않았습니다.');
-      return;
-    }
-
     if (mediaRecorderRef.current != null) mediaRecorderRef.current.stop();
-  }, [audioUrl, hasReactNativeWebview, postMessageToRN, showToast]);
+  }, [hasReactNativeWebview, postMessageToRN]);
 
   const record = useCallback(async () => {
     if (hasReactNativeWebview) {
@@ -173,10 +165,10 @@ export default function useRecorder() {
           startTimer();
           showToast('success', TOAST_SUCCESS_MESSAGES.RESUME_RECORD);
         } else if (type === 'onStopRecord') {
-          const { audio, mimeType, ext } = data;
+          const { audio, mimeType } = data;
           const blob = base64ToBlob(audio, mimeType);
           const url = URL.createObjectURL(blob);
-          onStopRecord({ url, ext });
+          onStopRecord({ url });
           setRecordState(null);
         } else if (type === 'onPauseRecord') {
           setRecordState('paused');
