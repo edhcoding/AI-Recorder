@@ -115,8 +115,7 @@ export default function useRecorder() {
 
     try {
       const stream = await window.navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = 'audio/webm';
-      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
 
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.onstart = () => {
