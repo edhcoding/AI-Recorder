@@ -9,7 +9,7 @@ import WebView from 'react-native-webview';
 import { styles } from './styles';
 import { useCallback, useRef } from 'react';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
-import { WEBVIEW_URL_DEV_NGROK } from './constants';
+import { WEBVIEW_URL } from './constants';
 import useAudioRecorder from './hooks/useAudioRecorder';
 import useCamera from './hooks/useCamera';
 import useDatabase from './hooks/useDatabase';
@@ -47,7 +47,7 @@ export default function App() {
       <WebView
         ref={webViewRef}
         source={{
-          uri: WEBVIEW_URL_DEV_NGROK,
+          uri: WEBVIEW_URL,
         }}
         onMessage={event => {
           const { type, data } = JSON.parse(event.nativeEvent.data);

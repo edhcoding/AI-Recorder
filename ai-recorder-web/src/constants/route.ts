@@ -6,3 +6,11 @@ export const ROUTES = {
   recorderList: '/recorder-list',
   other: '*',
 } as const;
+
+export const pageTitleMap: Record<string, string> = {
+  '/': 'home',
+  '/recorder': 'recorder',
+  '/recorderDetail': 'recorderDetail',
+  '/photo': 'photo',
+  '/recorder-list': 'recorder-list',
+};

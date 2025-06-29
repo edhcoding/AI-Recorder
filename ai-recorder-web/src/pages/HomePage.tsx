@@ -33,7 +33,7 @@ export default function HomePage() {
           <button
             type="button"
             onClick={onClickRecorder}
-            className="bg-primary text-white py-2 px-10 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer"
+            className="bg-primary text-white py-2 px-10 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer duration-200"
           >
             <span className="material-icons text-3xl!">mic</span>
             <span className="text-md ml-1">녹음 시작하기</span>
@@ -41,7 +41,7 @@ export default function HomePage() {
           <button
             type="button"
             onClick={onClickRecorderList}
-            className="bg-black text-bg py-2 px-4 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer"
+            className="bg-black text-bg py-2 px-4 rounded-xl flex items-center max-w-52 w-full justify-center hover:bg-primary/90 cursor-pointer duration-200"
           >
             <span className="material-icons text-3xl!">folder</span>
             <span className="text-md ml-1">녹음 리스트</span>
