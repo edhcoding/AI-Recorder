@@ -32,7 +32,7 @@ export default function RecorderListPage() {
               onClick={() => {
                 navigate(`${ROUTES.recorderDetail(id)}`);
               }}
-              className="h-24 bg-white flex flex-row items-center px-2 py-4 rounded-lg"
+              className="h-24 bg-white flex flex-row items-center px-2 py-4 rounded-lg cursor-pointer hover:shadow-lg duration-200"
             >
               <div className="mr-5">
                 <img src="/assets/images/record-disc.png" alt="logo" className="size-10 inline-block" />
@@ -47,7 +47,7 @@ export default function RecorderListPage() {
                   e.stopPropagation();
                   handleDelete({ id });
                 }}
-                className="border-black border-3 bg-primary text-white px-2 py-1 rounded-xl ml-2 flex items-center"
+                className="border-black border-3 bg-primary text-white px-2 py-1 rounded-xl ml-2 flex items-center cursor-pointer"
               >
                 <span className="material-icons text-lg! text-white">delete</span>
               </button>
@@ -57,7 +57,7 @@ export default function RecorderListPage() {
       </div>
       <button
         onClick={() => navigate(ROUTES.recorder)}
-        className="bg-black py-2 px-5 rounded-3xl flex items-center bottom-8 right-4 fixed"
+        className="bg-black py-2 px-5 rounded-3xl flex items-center bottom-8 right-4 fixed cursor-pointer hover:bg-black/90 duration-300"
       >
         <span className="material-icons text-white text-2xl!">mic</span>
         <span className="text-white text-lg ml-1">녹음하기</span>
