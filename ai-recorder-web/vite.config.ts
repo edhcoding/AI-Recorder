@@ -8,6 +8,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   server: {
     host: true,
-    allowedHosts: ['ngrok-free.app', '4a95-121-154-198-68.ngrok-free.app'],
+    allowedHosts: ['ngrok-free.app', '5355-2406-5900-902b-7c10-d416-d7dd-932-fa15.ngrok-free.app'],
   },
 });

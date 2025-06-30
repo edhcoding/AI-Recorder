@@ -84,7 +84,7 @@ export default function RecorderPage() {
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="text-xl text-center">
+            <p className="text-xl text-center font-medium">
               마이크 버튼을 눌러 <br /> 녹음을 시작하세요!! <br />
             </p>
             <span className="text-primary font-semibold">+) 사진 기능이 추가되었습니다 !!</span>
